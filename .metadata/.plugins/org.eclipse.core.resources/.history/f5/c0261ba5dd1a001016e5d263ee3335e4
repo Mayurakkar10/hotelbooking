@@ -1,0 +1,34 @@
+package com.example.demo.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.model.UsersModel;
+import com.example.demo.repository.UsersRepository;
+
+@Service
+public class UsersService {
+
+    @Autowired
+    UsersRepository repo;
+
+    public boolean isAddNewUser(UsersModel model) {
+        int roleId = repo.getRoleIdByName("Customer");  // Example role
+        model.setRole_id(roleId);
+        return repo.isAddNewUser(model);  // Add new user to database
+    }
+
+    // Updated login method
+    public String login(UsersModel user) {
+        // Call repository method to check user credentials and fetch role
+        String role = repo.login(user.getEmail(), user.getPassword());
+
+        // If role is null, login failed, return null or specific message
+        if (role == null) {
+            return null;
+        }
+
+        // If login is successful, return the role
+        return role;
+    }
+}

@@ -1,0 +1,17 @@
+package com.example.demo.services;
+
+import java.util.List;
+
+public class CustomerService {
+
+	public List viewAllCustomers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean isAddCutomers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

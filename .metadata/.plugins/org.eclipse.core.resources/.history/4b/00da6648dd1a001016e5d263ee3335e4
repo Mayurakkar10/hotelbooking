@@ -1,0 +1,24 @@
+package com.example.demo.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.model.UsersModel;
+import com.example.demo.repository.UsersRepository;
+
+@Service
+public class UsersService {
+
+    @Autowired
+    UsersRepository repo;
+
+    public boolean isAddNewUser(UsersModel model) {
+        int roleId = repo.getRoleIdByName("Customer");
+        model.setRole_id(roleId); 
+        return repo.isAddNewUser(model);
+    }
+
+    public Boolean login(UsersModel user) {
+        return repo.validateUser(user.getEmail(), user.getPassword());
+    }
+}

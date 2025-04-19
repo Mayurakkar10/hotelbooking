@@ -1,0 +1,89 @@
+package com.example.demo.repository;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import java.util.*;
+import com.example.demo.model.OwnerModel;
+
+@Repository
+public class OwnerRepository {
+	@Autowired
+JdbcTemplate template;
+List list;
+	public List<Owner> getAllEmployee(){
+    	list = template.query("select * from employee",new RowMapper<Employee>() {
+
+			@Override
+			public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Employee emp = new Employee();
+				emp.setEmpid(rs.getInt(1));
+				emp.setName(rs.getString(2));
+				emp.setSalary(rs.getInt(3));
+				emp.setCity(rs.getString(4));
+				return  emp;
+			}
+    		
+    	});
+    	return list;
+    }
+	
+	public boolean updateOwner(OwnerModel model) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public List<OwnerModel> getOwnerByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean deleteOwnerById(int ownerId) {
+		int value =  jdbcTemplate.update("delete from employee where empid="+id);
+    	return value>0?true:false;
+		return false;
+	}
+
+	public boolean deleteOwnerByName(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public OwnerModel getOwnerById(int ownerId) {
+		list = jdbcTemplate.query("select * from employee where empid=?",new Object[] {id},new RowMapper<Employee>() {
+
+			@Override
+			public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Employee emp = new Employee();
+				emp.setEmpid(rs.getInt(1));
+				emp.setName(rs.getString(2));
+				emp.setSalary(rs.getInt(3));
+				emp.setCity(rs.getString(4));
+				return  emp;
+			}
+    		
+    	});
+    	return list.size()>0 ? list.get(0):null;
+		return null;
+	}
+
+	public void addNewOwner(OwnerModel owner) {
+		 int rowsAffected = jdbcTemplate.update(
+		            "INSERT INTO Employee (empid, name, salary, city) VALUES (?, ?, ?, ?)", 
+		            new PreparedStatementSetter() {
+		                @Override
+		                public void setValues(java.sql.PreparedStatement ps) throws java.sql.SQLException {
+		                    ps.setInt(1, emp.getEmpid());
+		                    ps.setString(2, emp.getName());
+		                    ps.setInt(3, emp.getSalary());
+		                    ps.setString(4, emp.getCity());
+		                }
+		            }
+		        );
+		        return rowsAffected > 0;		
+	}
+
+}
+
