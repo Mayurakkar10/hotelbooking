@@ -28,4 +28,14 @@ public class UsersService {
         }
         return null;
     }
+    public UsersModel findUserByEmailAndPassword(String email, String password) {
+        return repo.findUserByEmailAndPassword(email, password);
+    }
+
+    /**
+     * Given a numeric role_id, return the role_name string.
+     */
+    public String getRoleName(int roleId) {
+        return repo.findRoleNameByRoleId(roleId);
+    }
 }

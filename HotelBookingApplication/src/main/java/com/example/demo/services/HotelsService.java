@@ -18,6 +18,9 @@ public class HotelsService {
         return hotelsRepository.getAllHotels();
     }
 
+    public List<HotelsModel> getHotelsByOwnerId(int ownerId){
+    	return hotelsRepository.getHotelsByOwnerId(ownerId);
+    }
     // Method to add a new hotel
     public String addHotel(HotelsModel hotel) {
         boolean added = hotelsRepository.addHotel(hotel);

@@ -18,6 +18,14 @@ public class HotelsController {
         return added ? "Hotel added successfully" : "Failed to add hotel";
     }
     
+    @PostMapping("/addHotels/{ownerId}")
+    public String addHotel(@PathVariable int ownerId, @RequestBody HotelsModel hotel) {
+        hotel.setOwner_id(ownerId); 
+        boolean added = hotelsRepository.addHotel(hotel);
+        return added ? "Hotel added successfully" : "Failed to add hotel";
+    }
+
+    
     @GetMapping("/getAllHotels")
     public List<HotelsModel> getAllHotels() {
         return hotelsRepository.getAllHotels();
@@ -39,6 +47,11 @@ public class HotelsController {
         } else {
             return null; 
         }
+    }
+    
+    @GetMapping("/hotels/owner/{ownerId}")
+    public List<HotelsModel> getHotelsByOwner(@PathVariable int ownerId) {
+        return hotelsRepository.getHotelsByOwnerId(ownerId);
     }
 
     @DeleteMapping("deleteHotelById/{hotelId}")

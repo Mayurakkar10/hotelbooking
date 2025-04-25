@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -37,13 +39,12 @@ public class HotelsRepository {
 
     // Method to add a new hotel
     public Boolean addHotel(HotelsModel model) {
-        String sql = "INSERT INTO Hotels (owner_id, name, location, category, created_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Hotels (owner_id, name, location, category) VALUES (?, ?, ?, ?)";
         int rowsAffected = template.update(sql, 
             model.getOwner_id(), 
             model.getName(),
             model.getLocation(),
-            model.getCategory(),
-            model.getCreated_at()
+            model.getCategory()
         );
         return rowsAffected > 0;
     }
@@ -104,4 +105,22 @@ public class HotelsRepository {
         Integer count = template.queryForObject(checkOwnerSql, new Object[]{ownerId}, Integer.class);
         return count != null && count > 0;
     }
+    
+    public List<HotelsModel> getHotelsByOwnerId(int ownerId) {
+        String sql = "SELECT * FROM Hotels WHERE owner_id = ?";
+        return template.query(sql, new RowMapper<HotelsModel>() {
+            @Override
+            public HotelsModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                HotelsModel hotel = new HotelsModel();
+                hotel.setHotel_id(rs.getInt("hotel_id"));
+                hotel.setOwner_id(rs.getInt("owner_id"));
+                hotel.setName(rs.getString("name"));
+                hotel.setLocation(rs.getString("location"));
+                hotel.setCategory(rs.getString("category"));
+                hotel.setCreated_at(rs.getTimestamp("created_at"));
+                return hotel;
+            }
+        }, ownerId);
+    }
+    
 }

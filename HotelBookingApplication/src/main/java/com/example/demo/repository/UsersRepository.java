@@ -65,4 +65,28 @@ public class UsersRepository {
             return null;
         }
     }
+    public UsersModel findUserByEmailAndPassword(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        try {
+            return template.queryForObject(
+                sql,
+                new Object[]{email, password},
+                new BeanPropertyRowMapper<>(UsersModel.class)
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Fetch the role_name string for a given role_id
+     */
+    public String findRoleNameByRoleId(int roleId) {
+        String sql = "SELECT role_name FROM roles WHERE role_id = ?";
+        try {
+            return template.queryForObject(sql, new Object[]{roleId}, String.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
