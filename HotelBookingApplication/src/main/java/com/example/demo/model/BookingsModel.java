@@ -3,6 +3,7 @@ package com.example.demo.model;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -20,5 +21,7 @@ public class BookingsModel {
     private Integer review_rating;
     private String review_text;
     private Timestamp created_at;
+    private int number_of_guests; // Number of guests for the booking
+    private List<GuestDetailsModel> guest_details; // List of guest details
 
 }

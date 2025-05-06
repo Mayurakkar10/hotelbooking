@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookingsService {
@@ -13,19 +14,31 @@ public class BookingsService {
     @Autowired
     private BookingsRepository bookingsRepository;
 
-    // Get all bookings
     public List<BookingsModel> getAllBookings() {
         return bookingsRepository.getAllBookings();
     }
-
-    // Add a new booking
-    public String addBooking(BookingsModel booking) {
-        boolean added = bookingsRepository.addBooking(booking);
-        return added ? "Booking added successfully" : "Failed to add booking. Check customer, hotel, or room details.";
+    public Integer addBooking(BookingsModel booking) {
+        return bookingsRepository.addBookingReturnId(booking);
+    }
+    public List<Map<String, Object>> getBookingsByOwner(int ownerId) {
+        return bookingsRepository.getBookingsByOwner(ownerId);
     }
 
-    // Get booking by booking_id
-    public BookingsModel getBookingById(int bookingId) {
+    public List<Map<String, Object>> getBookingsByCustomer(int customerId) {
+        return bookingsRepository.getBookingsByCustomer(customerId);
+    }
+
+    public Map<String, Object> getBookingById(int bookingId) {
         return bookingsRepository.getBookingById(bookingId);
     }
+
+    public Map<String, Object> addReview(int bookingId, int rating, String review) {
+        bookingsRepository.addReview(bookingId, rating, review);
+        return bookingsRepository.getBookingById(bookingId);
+    }
+    public List<Map<String, Object>> getHotelDetails() {
+        return bookingsRepository.getHotelDetails();
+    }
+    
 }
+
