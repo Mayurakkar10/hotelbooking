@@ -20,6 +20,8 @@ public class BookingsRepository {
 
     @Autowired
     private JdbcTemplate template;
+    
+    
 
     public List<BookingsModel> getAllBookings() {
         String sql = "SELECT * FROM Bookings";
@@ -42,6 +44,7 @@ public class BookingsRepository {
             }
         });
     }
+
 
     public Integer addBookingReturnId(BookingsModel booking) {
         if (!isValidCustomer(booking.getCustomer_id())) return null;
@@ -69,28 +72,23 @@ public class BookingsRepository {
             return ps;
         }, keyHolder);
 
-        return rowsAffected > 0 ? keyHolder.getKey().intValue() : null;
-    }
-    public Boolean addBooking(BookingsModel booking) {
-        if (!isValidCustomer(booking.getCustomer_id())) return false;
-        if (!isValidHotel(booking.getHotel_id())) return false;
-        if (!isRoomValidForHotel(booking.getRoom_id(), booking.getHotel_id())) return false;
+        if (rowsAffected > 0) {
+            Integer bookingId = keyHolder.getKey().intValue();
 
-        String sql = "INSERT INTO Bookings (customer_id, hotel_id, room_id, check_in_date, check_out_date, total_price, status, review_rating, review_text, created_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        int rowsAffected = template.update(sql,
-                booking.getCustomer_id(),
-                booking.getHotel_id(),
-                booking.getRoom_id(),
-                booking.getCheck_in_date(),
-                booking.getCheck_out_date(),
-                booking.getTotal_price(),
-                booking.getStatus(),
-                booking.getReview_rating(),
-                booking.getReview_text(),
-                booking.getCreated_at());
-        return rowsAffected > 0;
+            // Update room availability status to 'Booked'
+            String updateRoomSql = "UPDATE Rooms SET availability_status = 'Booked' WHERE room_id = ?";
+            int updated = template.update(updateRoomSql, booking.getRoom_id());
+
+            System.out.println("Room update status: " + updated); // Debug print
+
+            // Optional: You can check if `updated > 0` and rollback manually if needed
+            return bookingId;
+        }
+
+        return null;
     }
+
+
 
     private boolean isValidCustomer(int customerId) {
         String sql = "SELECT COUNT(*) FROM Users WHERE user_id = ? AND role_id = (SELECT role_id FROM Roles WHERE role_name = 'Customer')";
@@ -174,6 +172,8 @@ public class BookingsRepository {
 
         return template.queryForList(sql);
     }
+    
+    
 
 
     

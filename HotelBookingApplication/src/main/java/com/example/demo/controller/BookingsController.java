@@ -1,7 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.BookingsModel;
+import com.example.demo.model.UsersModel;
+import com.example.demo.repository.BookingsRepository;
+import com.example.demo.repository.UsersRepository;
 import com.example.demo.services.BookingsService;
+import com.example.demo.services.EmailService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,15 @@ public class BookingsController {
     @Autowired
     private BookingsService bookingsService;
     
+    @Autowired 
+    private BookingsRepository bookingsRepostiory;
+    
+    @Autowired
+    private UsersRepository usersRepository;
+    
+    @Autowired 
+    private EmailService emailService;
+    
     @PostMapping("/addBooking")
     public ResponseEntity<?> addBooking(@RequestBody BookingsModel booking) {
         Integer bookingId = bookingsService.addBooking(booking);
@@ -24,8 +38,26 @@ public class BookingsController {
             return ResponseEntity.badRequest().body("Booking validation failed or could not insert.");
         }
 
-        Map<String, Object> response = Map.of("bookingId", bookingId);
-        return ResponseEntity.ok(response);
+//        Map<String, Object> response = Map.of("bookingId", bookingId);
+//        return ResponseEntity.ok(response);
+        
+        Map<String, Object> bookingInfo = bookingsRepostiory.getBookingById(bookingId);
+        UsersModel user = usersRepository.getUserById(booking.getCustomer_id());
+
+        if (user != null && bookingInfo != null) {
+            String email = user.getEmail();
+            String name = user.getName();
+            String hotelName = (String) bookingInfo.get("hotel_name");
+            String roomType = (String) bookingInfo.get("room_type");
+            int guests = booking.getNumber_of_guests();
+            String checkIn = booking.getCheck_in_date().toString();
+            String checkOut = booking.getCheck_out_date().toString();
+            double price = booking.getTotal_price().doubleValue();
+       
+            emailService.sendBookingConfirmation(email, name, hotelName, roomType, guests, checkIn, checkOut, price);
+        }
+
+        return ResponseEntity.ok(Map.of("bookingId", bookingId));
     }
 
 

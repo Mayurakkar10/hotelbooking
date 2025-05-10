@@ -11,5 +11,6 @@ public class HotelsModel {
     private String location;
     private String category;
     private String image_url;
+    private String description;
     private Timestamp created_at;  
 }

@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import com.example.demo.model.UsersModel;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,8 +31,8 @@ public class UsersRepository {
     }
 
     public boolean isAddNewUser(UsersModel user) {
-        String sql = "INSERT INTO users (name, email, password, role_id) VALUES (?, ?, ?, ?)";
-        int result = template.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole_id());
+        String sql = "INSERT INTO users (name, email, password, phone, role_id) VALUES (?, ?, ?, ?,?)";
+        int result = template.update(sql, user.getName(), user.getEmail(),user.getPassword(), user.getPhone(), user.getRole_id());
         return result > 0;
     }
 
@@ -46,6 +47,7 @@ public class UsersRepository {
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
+                user.setPhone(rs.getString("phone"));
                 user.setRole_id(rs.getInt("role_id"));
                 return user;
             }
@@ -85,6 +87,19 @@ public class UsersRepository {
         String sql = "SELECT role_name FROM roles WHERE role_id = ?";
         try {
             return template.queryForObject(sql, new Object[]{roleId}, String.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public  UsersModel getUserById(int id) {
+    	String sql = "select * from users where user_id = ?";
+    	try {
+            return template.queryForObject(
+                sql,
+                new Object[]{id},
+                new BeanPropertyRowMapper<>(UsersModel.class)
+            );
         } catch (Exception e) {
             return null;
         }

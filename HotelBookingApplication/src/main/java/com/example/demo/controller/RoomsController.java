@@ -254,8 +254,8 @@ public class RoomsController {
     @PostMapping("/hotel/{hotelId}/addrooms")
     public ResponseEntity<String> addRoomToHotel(@PathVariable int hotelId, @RequestBody RoomsModel room) {
         room.setHotel_id(hotelId);  // Set hotel_id from path
-        System.out.println("Room object: " + room);
-        System.out.println("Amenity IDs: " + room.getAmenityIds());
+//        System.out.println("Room object: " + room);
+//        System.out.println("Amenity IDs: " + room.getAmenityIds());
         boolean isAdded = roomsService.addRoom(room);
         if (isAdded) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Room added successfully");

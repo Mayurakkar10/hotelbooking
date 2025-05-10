@@ -12,7 +12,7 @@ public class GuestDetailsModel {
 	    private int booking_id;
 	    private String name;
 	    private int age;
-	    private int gender;  // Gender stored as an integer
+	    private int gender;  
 	    private String id_proof_type;
 	    private String id_proof_number;
 	    private Timestamp created_at;

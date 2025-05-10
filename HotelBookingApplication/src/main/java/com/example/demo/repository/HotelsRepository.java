@@ -149,32 +149,41 @@ public class HotelsRepository {
 
     // Add a new hotel
     public Boolean addHotel(HotelsModel model) {
-        String sql = "INSERT INTO Hotels (owner_id, name, location, category, image_url) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Hotels (owner_id, name, location, category, image_url,description) VALUES (?, ?, ?, ?, ?,?)";
         int rowsAffected = template.update(sql,
                 model.getOwner_id(),
                 model.getName(),
                 model.getLocation(),
                 model.getCategory(),
-                model.getImage_url()
+                model.getImage_url(),
+                model.getDescription()
         );
         return rowsAffected > 0;
     }
 
     // Update hotel
     public Boolean updateHotel(HotelsModel model) {
+        // Validate the owner ID
         if (!isValidOwner(model.getOwner_id())) {
             System.out.println("Invalid owner ID: " + model.getOwner_id());
             return false;
         }
-        String sql = "UPDATE Hotels SET name = ?, location = ?, category = ?, owner_id = ?, image_url = ? WHERE hotel_id = ?";
+
+        // SQL Update query
+        String sql = "UPDATE Hotels SET name = ?, location = ?, category = ?, owner_id = ?, image_url = ?, description = ? WHERE hotel_id = ?";
+        
+        // Execute the update with the correct parameter order
         int rowsAffected = template.update(sql,
                 model.getName(),
                 model.getLocation(),
                 model.getCategory(),
                 model.getOwner_id(),
                 model.getImage_url(),
-                model.getHotel_id()
+                model.getDescription(),  // Correct order here
+                model.getHotel_id()      // hotel_id should be passed last
         );
+        
+        // Return true if at least one row was affected
         return rowsAffected > 0;
     }
 
